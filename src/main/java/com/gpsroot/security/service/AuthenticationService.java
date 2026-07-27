@@ -25,6 +25,10 @@ public class AuthenticationService {
 
     public ResponseEntity<String> save(UserDto userDto) {
 
+                if(userRepository.findByEmail(userDto.getEmail()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exists");
+        }
+
         Users user = Users.builder()
                 .username(userDto.getUsername())
                 .password(passwordEncoder.encode(userDto.getPassword()))
