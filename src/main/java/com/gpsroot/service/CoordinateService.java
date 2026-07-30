@@ -7,6 +7,7 @@ import com.gpsroot.model.dto.CoordinateDto;
 import com.gpsroot.model.entity.Coordinate;
 import com.gpsroot.repository.CoordinateRepository;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 
@@ -66,6 +67,25 @@ public class CoordinateService {
                 .stream()
                 .map(coordinateMapper::toCoordinateDto)
                 .toList();
+
+    }
+
+    public CoordinateDto updateCoordinate(Long storeName, CoordinateDto coordinateDto) {
+
+        Coordinate coordinate = coordinateRepository.getCoordinateByStoreNumberAndIsActiveTrue(storeName)
+                .orElseThrow(() -> new NotFoundException("coordinate not found"));
+
+        coordinate.setStoreNumber(coordinateDto.getStoreNumber());
+        coordinate.setLatitude(coordinateDto.getLatitude());
+        coordinate.setLongitude(coordinateDto.getLongitude());
+        coordinate.setAddress(coordinateDto.getAddress());
+        coordinate.setActive(true);
+        coordinate.setUpdatedAt(LocalDateTime.now());
+
+        coordinateRepository.save(coordinate);
+
+        return coordinateMapper.toCoordinateDto(coordinate);
+
 
     }
 }

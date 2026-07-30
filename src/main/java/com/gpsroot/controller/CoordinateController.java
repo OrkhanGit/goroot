@@ -45,4 +45,12 @@ public class CoordinateController {
 
     }
 
+    @PutMapping("/update/{storeName}")
+    public ResponseEntity<CoordinateDto> updateCoordinate(@PathVariable Long storeName,
+                                                          @RequestBody CoordinateDto coordinateDto){
+
+        return ResponseEntity.ok(coordinateService.updateCoordinate(storeName,coordinateDto));
+
+    }
+
 }

@@ -16,7 +16,7 @@ public class EmailService {
         message.setTo(toEmail);
         message.setSubject("Şifrə bərpası kodu");
         message.setText("Şifrənizi bərpa etmək üçün kodunuz: " + code +
-                "\nKod 10 dəqiqə ərzində etibarlıdır.");
+                "\nKod 30 saniyə ərzində etibarlıdır.");
         mailSender.send(message);
     }
 }
