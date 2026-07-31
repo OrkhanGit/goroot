@@ -7,7 +7,6 @@ import com.gpsroot.model.dto.CoordinateDto;
 import com.gpsroot.model.entity.Coordinate;
 import com.gpsroot.repository.CoordinateRepository;
 import lombok.RequiredArgsConstructor;
-import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 
