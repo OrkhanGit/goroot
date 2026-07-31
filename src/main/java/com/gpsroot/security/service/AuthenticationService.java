@@ -72,4 +72,8 @@ public class AuthenticationService {
                 .refreshToken(storedToken.getToken())
                 .build();
     }
+
+    public void logout(RefreshRequest refreshRequest) {
+        refreshTokenService.revokeToken(refreshRequest.getRefreshToken());
+    }
 }

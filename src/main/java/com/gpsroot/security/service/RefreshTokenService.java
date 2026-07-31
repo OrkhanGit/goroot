@@ -44,4 +44,11 @@ public class RefreshTokenService {
 
         return refreshToken;
     }
+
+    public void revokeToken(String token) {
+        refreshTokenRepository.findByToken(token).ifPresent(refreshToken -> {
+            refreshToken.setRevoked(true);
+            refreshTokenRepository.save(refreshToken);
+        });
+    }
 }

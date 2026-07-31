@@ -49,4 +49,10 @@ public class AuthenticationController {
         return passwordResetService.resetPassword(request);
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@RequestBody RefreshRequest refreshRequest) {
+        authenticationService.logout(refreshRequest);
+        return ResponseEntity.noContent().build();
+    }
+
 }
