@@ -73,7 +73,7 @@ public class AuthenticationService {
                 .build();
     }
 
-    public void logout(RefreshRequest refreshRequest) {
-        refreshTokenService.revokeToken(refreshRequest.getRefreshToken());
-    }
+//    public void logout(RefreshRequest refreshRequest) {
+//        refreshTokenService.revokeToken(refreshRequest.getRefreshToken());
+//    }
 }
