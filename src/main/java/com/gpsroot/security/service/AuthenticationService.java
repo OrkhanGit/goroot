@@ -69,7 +69,7 @@ public class AuthenticationService {
 
         return UserResponse.builder()
                 .token(newAccessToken)
-                .refreshToken(storedToken.getToken())
+//                .refreshToken(storedToken.getToken())
                 .build();
     }
 

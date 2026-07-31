@@ -29,10 +29,10 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.auth(userRequest));
     }
 
-    @PostMapping("/refresh")
-    public ResponseEntity<UserResponse> refresh (@RequestBody RefreshRequest refreshRequest) {
-        return ResponseEntity.ok(authenticationService.refresh(refreshRequest));
-    }
+//    @PostMapping("/refresh")
+//    public ResponseEntity<UserResponse> refresh (@RequestBody RefreshRequest refreshRequest) {
+//        return ResponseEntity.ok(authenticationService.refresh(refreshRequest));
+//    }
 
     @PostMapping("/password/forgot")
     public ResponseEntity<String> forgotPassword(@RequestBody ForgotPasswordRequest request) {
