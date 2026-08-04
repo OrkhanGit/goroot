@@ -1,21 +1,31 @@
 package com.gpsroot.qr;
 
+import com.gpsroot.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class QrTokenService {
 
+    private final AttendanceRepository attendanceRepository;
+
     @Value("${app.secret-key}")
     private String secretKey; // .env / application.properties-dən gəlir
 
     private static final String HMAC_ALGO = "HmacSHA256";
+
+    public QrTokenService(AttendanceRepository attendanceRepository) {
+        this.attendanceRepository = attendanceRepository;
+    }
 
     public QrPayloadResponse generateQr(String officeId) {
         long issuedAt = System.currentTimeMillis() / 1000; // saniyə
@@ -39,5 +49,11 @@ public class QrTokenService {
         } catch (Exception e) {
             throw new RuntimeException("HMAC hesablama xətası", e);
         }
+    }
+
+    public List<AttendanceLog> getAll(String userName) {
+        List<AttendanceLog> byEmployeeId = attendanceRepository.findByEmployeeId(userName)
+                .orElseThrow(()-> new NotFoundException("Not found employee with name " + userName));
+        return byEmployeeId;
     }
 }
