@@ -1,5 +1,6 @@
 package com.gpsroot.exception;
 
+import com.gpsroot.qr.InvalidQrException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +42,22 @@ public class GlobalExceptionHandling {
         headers.add("error-code","409_CONFLICT");
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
+                .headers(headers)
+                .body(errorResponse);
+    }
+
+    @ExceptionHandler(InvalidQrException.class)
+    public ResponseEntity<ErrorResponse> invalidQr(InvalidQrException ex){
+        ErrorResponse errorResponse = new ErrorResponse();
+        Map<String,String> errorMap = new HashMap<>();
+        errorMap.put("message", ex.getMessage());
+        errorResponse.setErrorCode("400_BAD_REQUEST");
+        errorResponse.setTimestamp(LocalDateTime.now());
+        errorResponse.setMessage(errorMap);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("error-code","400_BAD_REQUEST");
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
                 .headers(headers)
                 .body(errorResponse);
     }
