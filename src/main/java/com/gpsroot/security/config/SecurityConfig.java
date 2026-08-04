@@ -28,6 +28,7 @@ public class SecurityConfig {
                         .requestMatchers("/login/**", "/api/login/**").permitAll()
                         .requestMatchers("/api/qr/generate").permitAll()
                         .requestMatchers("/kiosk.html").permitAll()
+                        .requestMatchers("/api/attendance/scan").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement( session -> session
