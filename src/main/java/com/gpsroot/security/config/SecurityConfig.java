@@ -27,6 +27,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests( auth -> auth
                         .requestMatchers("/login/**", "/api/login/**").permitAll()
                         .requestMatchers("/api/qr/generate").permitAll()
+                        .requestMatchers("/kiosk.html").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement( session -> session
