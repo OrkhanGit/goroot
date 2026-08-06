@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import java.nio.charset.StandardCharsets;
 import javax.crypto.*;
 
-import java.time.Duration;
+import java.time.*;
 import java.util.Base64;
 
 @Service
@@ -71,17 +71,25 @@ public class AttendanceService {
         }
 
         // --- 5. Giriş/Çıxış məntiqi ---
-        var lastLog = attendanceRepository
-                .findTopByEmployeeIdOrderByTimestampDesc(request.employeeId());
+        // Günün başlanğıcını təyin edirik (00:00, Bakı vaxtı ilə)
+        ZoneId zone = ZoneId.of("Asia/Baku");
+        Instant startOfToday = LocalDate.now(zone).atStartOfDay(zone).toInstant();
 
-        String type = (lastLog.isPresent() && lastLog.get().getType().equals("in"))
+        // Yalnız BU GÜNƏ aid sonuncu qeydi axtarırıq
+        var lastLogToday = attendanceRepository
+                .findTopByEmployeeIdAndTimestampAfterOrderByTimestampDesc(
+                        request.employeeId(), startOfToday);
+
+        // Bu günə aid qeyd yoxdursa VƏ YA sonuncusu "out"-dursa → "in"
+        // Bu günə aid sonuncusu "in"-dirsə → "out"
+        String type = (lastLogToday.isPresent() && lastLogToday.get().getType().equals("in"))
                 ? "out" : "in";
 
         AttendanceLog log = new AttendanceLog();
         log.setEmployeeId(request.employeeId());
         log.setOfficeId(request.officeId());
         log.setType(type);
-        log.setTimestamp(java.time.Instant.now());
+        log.setTimestamp(Instant.now());
         attendanceRepository.save(log);
 
         return new ScanResult(type, log.getTimestamp());
