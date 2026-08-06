@@ -30,6 +30,7 @@ public class SecurityConfig {
                         .requestMatchers("/kiosk.html").permitAll()
                         .requestMatchers("/api/attendance/scan").permitAll()
                         .requestMatchers("/error").permitAll()
+                        .requestMatchers("/product").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement( session -> session

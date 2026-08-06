@@ -1,10 +1,10 @@
 package com.gpsroot.qr;
 
+import com.gpsroot.exception.InvalidQrException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import java.nio.charset.StandardCharsets;
-import javax.crypto.*;
 
 import java.time.*;
 import java.util.Base64;
