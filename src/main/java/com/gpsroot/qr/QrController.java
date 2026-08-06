@@ -25,6 +25,5 @@ public class QrController {
     @GetMapping("/all/{userName}")
     public ResponseEntity<List<AttendanceLog>> getAll(@PathVariable String userName) {
         return ResponseEntity.ok(qrTokenService.getAll(userName));
-//        return qrTokenService.getAll(userName);
     }
 }
