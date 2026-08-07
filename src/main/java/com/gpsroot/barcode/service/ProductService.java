@@ -28,6 +28,7 @@ public class ProductService {
         Optional<Product> byBarcode = productRepository.findByBarcode(barcode);
 
         if (byBarcode.isPresent()) {
+
             Product existing = byBarcode.get();
 
             ProductMovement movement = new ProductMovement();
@@ -40,8 +41,18 @@ public class ProductService {
             return productRepository.save(existing);
 
         } else {
+
             product.setBarcode(barcode);
+
+            ProductMovement movement = new ProductMovement();
+            movement.setLocation(location);
+            movement.setUpdatedAt(LocalDateTime.now());
+            movement.setProduct(product);
+
+            product.getMovements().add(movement);
+
             return productRepository.save(product);
+
         }
     }
 
@@ -51,10 +62,11 @@ public class ProductService {
 
     }
 
+    @Transactional
     public ProductDto getProduct(String barcode) {
 
         Product byBarcode = productRepository.findByBarcode(barcode)
-                .orElseThrow(() -> new NotFoundException("barcode not found"));
+                .orElseThrow(()-> new NotFoundException("Product not found"));
 
         return productMapper.toProductDto(byBarcode);
 
