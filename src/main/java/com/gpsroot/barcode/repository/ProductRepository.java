@@ -1,7 +1,9 @@
 package com.gpsroot.barcode.repository;
 
+import com.gpsroot.barcode.dto.ProductsName;
 import com.gpsroot.barcode.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,5 +14,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Optional<Product> findByBarcode(String barcode);
     List<Product> findAllByOrderByProductNameAsc();
+
+    @Query("SELECT new com.gpsroot.barcode.dto.ProductsName(p.productName, p.barcode) " +
+            "FROM Product p ORDER BY p.productName ASC")
+    List<ProductsName> findAllProjectedOrderByProductNameAsc();
 
 }

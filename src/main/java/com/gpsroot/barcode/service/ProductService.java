@@ -47,9 +47,7 @@ public class ProductService {
 
     public List<ProductsName> getAllProducts() {
 
-        return productRepository.findAllByOrderByProductNameAsc().stream()
-                .map(productMapper::toProductsName)
-                .toList();
+        return productRepository.findAllProjectedOrderByProductNameAsc();
 
     }
 
