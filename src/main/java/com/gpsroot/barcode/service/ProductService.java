@@ -71,4 +71,16 @@ public class ProductService {
         return productMapper.toProductDto(byBarcode);
 
     }
+
+    @Transactional
+    public void updateProduct(String currentBarcode, String newBarcode, String productName) {
+        Optional<Product> byBarcode = productRepository.findByBarcode(currentBarcode);
+        if (byBarcode.isPresent()) {
+            Product product = byBarcode.get();
+            product.setBarcode(newBarcode);
+            product.setProductName(productName);
+            productRepository.save(product);
+        }
+    }
+
 }

@@ -42,4 +42,12 @@ public class ProductController {
 
     }
 
+    @PutMapping("/update/{currentBarcode}/{newBarcode}/{productName}")
+    public ResponseEntity<Void> updateProduct(@PathVariable String currentBarcode,
+                                              @PathVariable String newBarcode,
+                                              @PathVariable String productName) {
+        productService.updateProduct(currentBarcode, newBarcode, productName);
+        return ResponseEntity.ok().build();
+    }
+
 }
