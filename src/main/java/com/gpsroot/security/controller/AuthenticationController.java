@@ -2,7 +2,10 @@ package com.gpsroot.security.controller;
 
 
 import com.gpsroot.security.dto.*;
+import com.gpsroot.security.model.Users;
 import com.gpsroot.security.service.AuthenticationService;
+import com.gpsroot.security.service.GoogleAuthService;
+import com.gpsroot.security.service.JwtService;
 import com.gpsroot.security.service.PasswordResetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +21,9 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
     private final PasswordResetService passwordResetService;
+    private final GoogleAuthService googleAuthService;
+    private final JwtService jwtService;
+
 
     @PostMapping("/save")
     public ResponseEntity<String> save (@RequestBody UserDto userDto) {
@@ -54,5 +60,17 @@ public class AuthenticationController {
 //        authenticationService.logout(refreshRequest);
 //        return ResponseEntity.noContent().build();
 //    }
+
+    @PostMapping("/login/google")
+    public ResponseEntity<UserResponse> googleLogin(@RequestBody TokenRequest request) {
+        Users user = googleAuthService.verifyAndGetOrCreateUser(request.getIdToken());
+        String token = jwtService.generateToken(user);
+
+        UserResponse response = UserResponse.builder()
+                .token(token)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
 
 }
