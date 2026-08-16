@@ -42,11 +42,20 @@ public class GoogleAuthService {
 
             return usersRepository.findByProviderIdAndAuthProvider(googleId, AuthProvider.GOOGLE)
                     .orElseGet(() -> usersRepository.findByEmail(email)
+                            .map(existingUser -> linkGoogleToExistingUser(existingUser, googleId))
                             .orElseGet(() -> createNewGoogleUser(googleId, email, name)));
 
         } catch (Exception e) {
             throw new RuntimeException("Google token doğrulanmadı: " + e.getMessage());
         }
+    }
+
+    private Users linkGoogleToExistingUser(Users user, String googleId) {
+        if (user.getProviderId() == null) {
+            user.setProviderId(googleId);
+            return usersRepository.save(user);
+        }
+        return user;
     }
 
     private Users createNewGoogleUser(String googleId, String email, String name) {
