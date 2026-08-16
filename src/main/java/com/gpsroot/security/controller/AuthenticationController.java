@@ -61,7 +61,7 @@ public class AuthenticationController {
 //        return ResponseEntity.noContent().build();
 //    }
 
-    @PostMapping("/login/google")
+    @PostMapping("/google")
     public ResponseEntity<UserResponse> googleLogin(@RequestBody TokenRequest request) {
         Users user = googleAuthService.verifyAndGetOrCreateUser(request.getIdToken());
         String token = jwtService.generateToken(user);
