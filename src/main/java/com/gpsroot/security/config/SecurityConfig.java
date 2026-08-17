@@ -25,6 +25,7 @@ public class SecurityConfig {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests( auth -> auth
+                        .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/login/**", "/api/login/**").permitAll()
                         .requestMatchers("/api/qr/generate").permitAll()
                         .requestMatchers("/kiosk.html").permitAll()
