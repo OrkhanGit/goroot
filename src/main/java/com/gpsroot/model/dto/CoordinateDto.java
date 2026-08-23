@@ -9,5 +9,6 @@ public class CoordinateDto {
     private Double longitude;
     private String address;
     private Long storeNumber;
+    private String mapLink;
 
 }
