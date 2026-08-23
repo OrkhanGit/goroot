@@ -30,7 +30,7 @@ public class GlobalExceptionHandling {
     }
 
     @ExceptionHandler(ConflictException.class)
-    public ResponseEntity<ErrorResponse> conflict (NotFoundException ex){
+    public ResponseEntity<ErrorResponse> conflict(ConflictException ex){
         ErrorResponse errorResponse = new ErrorResponse();
         Map<String,String> errorMap = new HashMap<>();
         errorMap.put("message", ex.getMessage());
@@ -40,7 +40,7 @@ public class GlobalExceptionHandling {
         HttpHeaders headers = new HttpHeaders();
         headers.add("error-code","409_CONFLICT");
         return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
+                .status(HttpStatus.CONFLICT)
                 .headers(headers)
                 .body(errorResponse);
     }
@@ -55,6 +55,22 @@ public class GlobalExceptionHandling {
         errorResponse.setMessage(errorMap);
         HttpHeaders headers = new HttpHeaders();
         headers.add("error-code","400_BAD_REQUEST");
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .headers(headers)
+                .body(errorResponse);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> invalidArgument(IllegalArgumentException ex){
+        ErrorResponse errorResponse = new ErrorResponse();
+        Map<String,String> errorMap = new HashMap<>();
+        errorMap.put("message", ex.getMessage());
+        errorResponse.setErrorCode("400_INVALID_ARGUMENT");
+        errorResponse.setTimestamp(LocalDateTime.now());
+        errorResponse.setMessage(errorMap);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("error-code","400_INVALID_ARGUMENT");
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .headers(headers)
