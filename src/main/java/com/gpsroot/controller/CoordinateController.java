@@ -53,4 +53,11 @@ public class CoordinateController {
 
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<Long> countStores(){
+
+        return ResponseEntity.ok().body(coordinateService.countStores());
+
+    }
+
 }

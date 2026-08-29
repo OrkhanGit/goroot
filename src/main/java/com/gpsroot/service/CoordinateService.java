@@ -99,4 +99,10 @@ public class CoordinateService {
 
         return coordinateMapper.toCoordinateDto(coordinate);
     }
+
+    public Long countStores() {
+
+        return coordinateRepository.countAllByIsActiveTrue();
+
+    }
 }
