@@ -60,9 +60,9 @@ public class QrTokenService {
 
 
     public List<ViewUsersDto> getAllUsers() {
-        return attendanceRepository.findAll()
+        return attendanceRepository.findDistinctEmployeeIds()
                 .stream()
-                .map(attendanceMapper::toViewUsersDto)
+                .map(ViewUsersDto::new)
                 .toList();
     }
 }
