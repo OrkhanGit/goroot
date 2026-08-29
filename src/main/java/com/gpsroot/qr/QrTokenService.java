@@ -1,8 +1,8 @@
 package com.gpsroot.qr;
 
 import com.gpsroot.exception.NotFoundException;
+import com.gpsroot.mapper.AttendanceMapper;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.Mac;
@@ -16,14 +16,16 @@ import java.util.UUID;
 public class QrTokenService {
 
     private final AttendanceRepository attendanceRepository;
+    private final AttendanceMapper attendanceMapper;
 
     @Value("${app.secret-key}")
     private String secretKey; // .env / application.properties-dən gəlir
 
     private static final String HMAC_ALGO = "HmacSHA256";
 
-    public QrTokenService(AttendanceRepository attendanceRepository) {
+    public QrTokenService(AttendanceRepository attendanceRepository, AttendanceMapper attendanceMapper) {
         this.attendanceRepository = attendanceRepository;
+        this.attendanceMapper = attendanceMapper;
     }
 
     public QrPayloadResponse generateQr(String officeId) {
@@ -54,5 +56,13 @@ public class QrTokenService {
         List<AttendanceLog> byEmployeeId = attendanceRepository.findByEmployeeId(userName)
                 .orElseThrow(()-> new NotFoundException("Not found employee with name " + userName));
         return byEmployeeId;
+    }
+
+
+    public List<ViewUsersDto> getAllUsers() {
+        return attendanceRepository.findAll()
+                .stream()
+                .map(attendanceMapper::toViewUsersDto)
+                .toList();
     }
 }

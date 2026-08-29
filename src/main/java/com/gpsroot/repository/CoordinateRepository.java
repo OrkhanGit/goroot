@@ -16,5 +16,7 @@ public interface CoordinateRepository extends JpaRepository<Coordinate, Long> {
 
     List<Coordinate> getAllByIsActiveTrue();
 
+    Long countAllByIsActiveTrue();
+
 
 }
