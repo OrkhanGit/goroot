@@ -16,7 +16,6 @@ import java.util.UUID;
 public class QrTokenService {
 
     private final AttendanceRepository attendanceRepository;
-    private final AttendanceMapper attendanceMapper;
 
     @Value("${app.secret-key}")
     private String secretKey; // .env / application.properties-dən gəlir
@@ -25,7 +24,6 @@ public class QrTokenService {
 
     public QrTokenService(AttendanceRepository attendanceRepository, AttendanceMapper attendanceMapper) {
         this.attendanceRepository = attendanceRepository;
-        this.attendanceMapper = attendanceMapper;
     }
 
     public QrPayloadResponse generateQr(String officeId) {
