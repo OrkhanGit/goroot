@@ -1,6 +1,7 @@
 package com.gpsroot.qr;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.time.Instant;
 import java.util.List;
@@ -13,6 +14,9 @@ public interface AttendanceRepository extends JpaRepository<AttendanceLog, Long>
 
     Optional<AttendanceLog> findTopByEmployeeIdAndTimestampAfterOrderByTimestampDesc(
             String employeeId, Instant after);
+
+    @Query("SELECT DISTINCT a.employeeId FROM AttendanceLog a")
+    List<String> findDistinctEmployeeIds();
 
 
 }
