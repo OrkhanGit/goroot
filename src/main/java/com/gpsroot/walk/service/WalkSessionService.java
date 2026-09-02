@@ -1,5 +1,6 @@
 package com.gpsroot.walk.service;
 
+import com.gpsroot.walk.enums.WalkType;
 import com.gpsroot.walk.mapper.WalkSessionMapper;
 import com.gpsroot.walk.model.RequestWalkDto;
 import com.gpsroot.walk.model.ViewWalkDto;
@@ -47,7 +48,12 @@ public class WalkSessionService {
         LocalDateTime end = targetDate.plusDays(1).atStartOfDay();
 
         return walkSessionRepository
-                .findAllByEmployeeIdAndStartedAtBetweenOrderByStartedAtDesc(employeeId, start, end)
+                .findAllByEmployeeIdAndActivityTypeAndStartedAtBetweenOrderByStartedAtDesc(
+                        employeeId,
+                        WalkType.WALK,
+                        start,
+                        end
+                )
                 .stream()
                 .map(walkSessionMapper::toviewWalkDto)
                 .toList();
