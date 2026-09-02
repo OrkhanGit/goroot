@@ -3,6 +3,7 @@ package com.gpsroot.qr;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Entity
@@ -17,6 +18,6 @@ public class AttendanceLog {
     private String employeeId;
     private String officeId;
     private String type; // "in" və ya "out"
-    private LocalDateTime timestamp;
+    private Instant timestamp;
 }
 
