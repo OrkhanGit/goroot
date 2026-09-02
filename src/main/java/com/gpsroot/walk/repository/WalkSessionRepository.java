@@ -1,5 +1,6 @@
 package com.gpsroot.walk.repository;
 
+import com.gpsroot.walk.enums.WalkType;
 import com.gpsroot.walk.model.WalkSession;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -12,8 +13,9 @@ public interface WalkSessionRepository extends JpaRepository<WalkSession, Long> 
 
     List<WalkSession> findAllByOrderByCreatedAtDesc();
 
-    List<WalkSession> findAllByEmployeeIdAndStartedAtBetweenOrderByStartedAtDesc(
+    List<WalkSession> findAllByEmployeeIdAndActivityTypeAndStartedAtBetweenOrderByStartedAtDesc(
             String employeeId,
+            WalkType type,
             LocalDateTime start,
             LocalDateTime end
     );
