@@ -3,6 +3,8 @@ package com.gpsroot.qr;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "attendance_logs")
 @Data
@@ -15,6 +17,6 @@ public class AttendanceLog {
     private String employeeId;
     private String officeId;
     private String type; // "in" və ya "out"
-    private java.time.Instant timestamp;
+    private LocalDateTime timestamp;
 }
 

@@ -89,7 +89,7 @@ public class AttendanceService {
         log.setEmployeeId(request.employeeId());
         log.setOfficeId(request.officeId());
         log.setType(type);
-        log.setTimestamp(Instant.now());
+        log.setTimestamp(LocalDateTime.now());
         attendanceRepository.save(log);
 
         return new ScanResult(type, log.getTimestamp());

@@ -32,6 +32,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/attendance/scan").permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/product/**").permitAll()
+                        .requestMatchers("/walkSession/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement( session -> session
