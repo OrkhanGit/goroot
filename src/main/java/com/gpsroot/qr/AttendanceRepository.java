@@ -18,5 +18,8 @@ public interface AttendanceRepository extends JpaRepository<AttendanceLog, Long>
     @Query("SELECT DISTINCT a.employeeId FROM AttendanceLog a")
     List<String> findDistinctEmployeeIds();
 
+    List<AttendanceLog> findByEmployeeIdAndTimestampBetweenOrderByTimestampAsc(
+            String employeeId, Instant start, Instant end);
+
 
 }

@@ -77,4 +77,20 @@ public class GlobalExceptionHandling {
                 .body(errorResponse);
     }
 
+    @ExceptionHandler(AttendanceCalculationException.class)
+    public ResponseEntity<ErrorResponse> attendanceCalculationException(AttendanceCalculationException ex) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        Map<String, String> errorMap = new HashMap<>();
+        errorMap.put("message", ex.getMessage());
+        errorResponse.setErrorCode("400_ATTENDANCE_CALCULATION");
+        errorResponse.setTimestamp(LocalDateTime.now());
+        errorResponse.setMessage(errorMap);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("error-code", "400_ATTENDANCE_CALCULATION");
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .headers(headers)
+                .body(errorResponse);
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.gpsroot.qr;
 
+import com.gpsroot.exception.AttendanceCalculationException;
 import com.gpsroot.exception.InvalidQrException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -8,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 
 import java.time.*;
 import java.util.Base64;
+import java.util.List;
 
 @Service
 public class AttendanceService {
@@ -29,6 +31,12 @@ public class AttendanceService {
 
     private final StringRedisTemplate redisTemplate;
     private final AttendanceRepository attendanceRepository;
+
+    private static final ZoneId ZONE = ZoneId.of("Asia/Baku");
+    private static final LocalTime WORK_START = LocalTime.of(9, 0);
+    private static final LocalTime WORK_END = LocalTime.of(18, 0);
+    private static final LocalTime LUNCH_START = LocalTime.of(13, 0);
+    private static final LocalTime LUNCH_END = LocalTime.of(14, 0);
 
     public AttendanceService(
             StringRedisTemplate redisTemplate,
@@ -119,5 +127,76 @@ public class AttendanceService {
         } catch (Exception e) {
             throw new RuntimeException("HMAC hesablama xətası", e);
         }
+    }
+
+    /**
+     * Konkret gün üçün işçinin işlədiyi ümumi vaxtı hesablayır.
+     * 09:00-18:00 arası, nahar fasiləsi (13:00-14:00) çıxılmaqla.
+     */
+    public Duration calculateWorkedHours(String employeeId, LocalDate date) {
+        Instant startOfDay = date.atStartOfDay(ZONE).toInstant();
+        Instant endOfDay = date.plusDays(1).atStartOfDay(ZONE).toInstant();
+
+        List<AttendanceLog> logs = attendanceRepository
+                .findByEmployeeIdAndTimestampBetweenOrderByTimestampAsc(employeeId, startOfDay, endOfDay);
+
+        Duration total = Duration.ZERO;
+        Instant pendingIn = null;
+
+        for (AttendanceLog log : logs) {
+            if ("in".equals(log.getType())) {
+                if (pendingIn != null) {
+                    // ard-arda iki "in" gəlirsə - deməli əvvəlkinin çıxışı yoxdur
+                    throw new AttendanceCalculationException(
+                            "İşçinin (ID: " + employeeId + ") " + date + " tarixli çıxışı yoxdur");
+                }
+                pendingIn = log.getTimestamp();
+            } else if ("out".equals(log.getType())) {
+                if (pendingIn == null) {
+                    // "in" olmadan "out" gəlibsə - girişi yoxdur
+                    throw new AttendanceCalculationException(
+                            "İşçinin (ID: " + employeeId + ") " + date + " tarixli girişi yoxdur");
+                }
+                total = total.plus(calculateSegment(pendingIn, log.getTimestamp(), date));
+                pendingIn = null;
+            }
+        }
+
+        // dövr sonunda hələ bağlanmamış "in" qalıbsa - çıxışı yoxdur
+        if (pendingIn != null) {
+            throw new AttendanceCalculationException(
+                    "İşçinin (ID: " + employeeId + ") " + date + " tarixli çıxışı yoxdur");
+        }
+
+        return total;
+    }
+
+    /**
+     * Bir giriş-çıxış cütünü iş saatları (09-18) daxilinə sıxışdırır
+     * və nahar fasiləsi ilə üst-üstə düşən hissəni çıxır.
+     */
+    private Duration calculateSegment(Instant checkIn, Instant checkOut, LocalDate date) {
+        Instant workStart = date.atTime(WORK_START).atZone(ZONE).toInstant();
+        Instant workEnd = date.atTime(WORK_END).atZone(ZONE).toInstant();
+        Instant lunchStart = date.atTime(LUNCH_START).atZone(ZONE).toInstant();
+        Instant lunchEnd = date.atTime(LUNCH_END).atZone(ZONE).toInstant();
+
+        Instant start = checkIn.isBefore(workStart) ? workStart : checkIn;
+        Instant end = checkOut.isAfter(workEnd) ? workEnd : checkOut;
+
+        if (!start.isBefore(end)) {
+            return Duration.ZERO;
+        }
+
+        Duration segment = Duration.between(start, end);
+
+        Instant overlapStart = start.isBefore(lunchStart) ? lunchStart : start;
+        Instant overlapEnd = end.isAfter(lunchEnd) ? lunchEnd : end;
+
+        if (overlapStart.isBefore(overlapEnd)) {
+            segment = segment.minus(Duration.between(overlapStart, overlapEnd));
+        }
+
+        return segment;
     }
 }
