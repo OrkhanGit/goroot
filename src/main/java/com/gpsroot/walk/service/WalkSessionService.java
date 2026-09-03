@@ -117,7 +117,10 @@ public class WalkSessionService {
         if (Boolean.FALSE.equals(redisTemplate.hasKey(key))) {
 
             List<LocalDate> datesFromDb = walkSessionRepository
-                    .findDistinctDatesByEmployeeIdAndActivityType(employeeId, WalkType.WALK);
+                    .findDistinctDatesByEmployeeIdAndActivityType(employeeId, WalkType.WALK)
+                    .stream()
+                    .map(java.sql.Date::toLocalDate)
+                    .toList();
 
             if (!datesFromDb.isEmpty()) {
                 Set<String> asStrings = datesFromDb.stream()

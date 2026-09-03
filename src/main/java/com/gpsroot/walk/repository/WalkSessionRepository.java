@@ -25,8 +25,9 @@ public interface WalkSessionRepository extends JpaRepository<WalkSession, Long> 
 
     @Query("SELECT DISTINCT CAST(w.startedAt AS date) FROM WalkSession w " +
             "WHERE w.employeeId = :employeeId AND w.activityType = :type")
-    List<LocalDate> findDistinctDatesByEmployeeIdAndActivityType(@Param("employeeId") String employeeId,
-                                                                 @Param("type") WalkType type
+    List<java.sql.Date> findDistinctDatesByEmployeeIdAndActivityType(
+            @Param("employeeId") String employeeId,
+            @Param("type") WalkType type
     );
 
 }
