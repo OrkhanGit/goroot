@@ -1,6 +1,6 @@
 package com.gpsroot.walk.mapper;
 
-import com.gpsroot.walk.model.BikeDto;
+import com.gpsroot.walk.model.ViewBikeDto;
 import com.gpsroot.walk.model.ViewWalkDto;
 import com.gpsroot.walk.model.WalkSession;
 import org.mapstruct.Mapper;
@@ -9,9 +9,11 @@ import org.mapstruct.Mapper;
 public interface WalkSessionMapper {
 
     WalkSession toWalkSession(ViewWalkDto viewwalkDto);
-    WalkSession toWalkSession(BikeDto bikeDto);
+    WalkSession toWalkSession(ViewBikeDto bikeDto);
 
     ViewWalkDto toviewWalkDto(WalkSession walkSession);
-    BikeDto toBikeDto(WalkSession walkSession);
+    ViewBikeDto toviewBikeDto(WalkSession walkSession);
+
+
 
 }
